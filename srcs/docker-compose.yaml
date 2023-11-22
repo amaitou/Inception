@@ -1,0 +1,49 @@
+
+# Set the version
+version: '3'
+
+# Create a newtork under the name of "inception"
+networks:
+    inception:
+        name: inception
+        driver: bridge
+
+# Create Volumes
+volumes:
+    mariadb:
+        driver: local
+        name: mariadb
+
+# Define services (nginx, worpdress, mariadb)
+services:
+    # nginx
+    nginx:
+        container_name: nginx
+        image: nginx:1337
+        build:
+            context: ./requirements/nginx/.
+        stdin_open: true
+        tty: true
+        ports:
+            - "443:443"
+        restart: always
+        networks:
+            - inception
+
+    #mariadb
+    mariadb:
+        container_name: mariadb
+        image: mariadb:1337
+        stdin_open: true
+        tty: true
+        ports:
+            - "3306:3306"
+        restart: always
+        networks:
+            - inception
+        env_file:
+            - .env
+        volumes:
+            - mariadb:/var/lib/mysql
+        build:
+            context: ./requirements/mariadb/.
