@@ -48,4 +48,4 @@ fclean: remove_containers remove_images
 
 re: fclean build up_detach
 
-.PHONY: all build up up_detach remove_images remove_containers stop fclean rea
+.PHONY: all down build down up up_detach remove_images remove_containers stop fclean re show show_all
