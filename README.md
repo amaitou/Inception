@@ -1,6 +1,4 @@
 ---
-![1_Wu-YcRkS4CQUFQcY_rcdtw](https://github.com/amaitou/Inception/assets/49293816/5f0c3aab-72e9-4f4c-8d0f-db81d31a32b2)
-
 ---
 
 # Inception
@@ -10,8 +8,6 @@ This project aims to broaden your knowledge of system administration by using Do
 ---
 
 # What is Docker?
-
-![Untitled](https://github.com/amaitou/Inception/assets/49293816/b775e5de-c6de-4b22-a57c-16eb46e6cdb8)
 
 Docker is a platform and tool designed to help developers, system administrators, and DevOps engineers create, deploy, and run applications in containers. Containers are lightweight and portable units that can package an application and its dependencies, including libraries and runtime, into a single image. Docker provides a way to automate the deployment of applications in a consistent and predictable manner, regardless of the environment they are running in.
 
@@ -126,15 +122,9 @@ But in this article, we will be using the `docker` (u can use either the docker 
 
 # Data Persistence
 
-![0_UwEFPqwwpht9ULT4](https://github.com/amaitou/Inception/assets/49293816/96cc9948-522b-4f59-bb55-98020c514a07)
-
-
 Docker has two options for containers to store files on the host machine, so that the files are persisted even after the container stops: volumes, and bind mounts. Docker also supports containers storing files in memory on the host machine. Such files do not persist.
 
 - ### Volumes
-
-	![g-drive](https://github.com/amaitou/Inception/assets/49293816/d79468d4-b61f-42e9-abee-6e7b050515f5)
-
 
 	Docker volumes are a way to persistently store and manage data outside of the container's writable layer. Volumes are Docker-managed directories or file systems that are mounted into containers. They are separate from the container's file system, making them ideal for storing data that needs to survive container life cycles.
 
@@ -148,9 +138,6 @@ Docker has two options for containers to store files on the host machine, so tha
 	```
 
 - ### Mount
-
-  	![docker-bind-mounts](https://github.com/amaitou/Inception/assets/49293816/643ab919-7b6a-459a-8333-58ee7541835b)
-
 
 	Mounts, on the other hand, are a way to bind a file or directory from the host system into a container. Mounts can be used to provide containers with access to specific files or directories on the host. This approach allows containers to interact with files from the host system in real time.
 
@@ -175,17 +162,11 @@ Docker has two options for containers to store files on the host machine, so tha
 
 # Docker Network
 
-![1200px-network-monitoring-for-docker](https://github.com/amaitou/Inception/assets/49293816/4bb1c21b-c01c-4ac0-add9-92f46be68dff)
-
-
 A Docker network is a communication bridge between different containers and between containers and the host system. It enables isolated containers to communicate with each other while providing a level of security and abstraction.
 
 - ### Type of Docker Networks
 
 	- ##### Bridge Network
-
-	![bridge2](https://github.com/amaitou/Inception/assets/49293816/0a1a3c7b-650a-46d0-b494-abf0d1955919)
-
 
 	Default network created when Docker is installed. It allows containers on the same host to communicate.
 	ex ->  Running a web server container and a database container that need to interact with each other.
