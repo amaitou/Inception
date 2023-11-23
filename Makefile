@@ -12,7 +12,7 @@ create_wordpress:
 	@if [ -d "/home/data/wordpress" ]; then \
 		echo "$(YELLOW)/home/data/wordpress/$(RESET) exists"; \
 	else \
-		echo "$(GREEN)Creating /home/data/wordpress/ ..."; \
+		echo "$(GREEN)Creating /home/data/wordpress/ ...$(RESET)"; \
 		sudo mkdir -p /home/data/wordpress; \
 	fi
 
@@ -20,13 +20,14 @@ create_mariadb:
 	@if [ -d "/home/data/mariadb" ]; then \
 			echo "$(YELLOW)/home/data/mariadb/$(RESET) exists"; \
 	else \
-		echo "$(GREEN)Creating /home/data/mariadb/ ..."; \
+		echo "$(GREEN)Creating /home/data/mariadb/ ...$(RESET)"; \
 		sudo mkdir -p /home/data/mariadb; \
 	fi
 
 create_both: create_wordpress create_mariadb
 
 build: create_both
+	@clear
 	@echo "$(YELLOW)[*] Phase of building images ...$(RESET)"
 	@sudo docker-compose -f $(path) build
 
@@ -77,7 +78,7 @@ show_all:
 	@echo "$(GREEN)[.] List all networks$(RESET)"
 	@sudo docker network ls
 
-fclean: remove_containers remove_images remove_volumes
+fclean: remove_containers remove_images remove_volumes remove_networks
 
 re: fclean build up_detach
 
