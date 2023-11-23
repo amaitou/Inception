@@ -10,8 +10,9 @@ RUN apt install -y 	nginx \
 
 RUN mkdir -p /etc/nginx/snippets/
 RUN mkdir -p /vat/run/nginx/
+RUN mkdir -p /var/www/html/wordpress
 
-RUN chmod 755 /var/www/html/
+RUN chmod 755 -R /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/
 
 EXPOSE 443

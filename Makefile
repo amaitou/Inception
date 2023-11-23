@@ -8,7 +8,25 @@ RESET := \033[0m
 
 all: build up_detach
 
-build:
+create_wordpress:
+	@if [ -d "/home/data/wordpress" ]; then \
+		echo "$(YELLOW)/home/data/wordpress/$(RESET) exists"; \
+	else \
+		echo "$(GREEN)Creating /home/data/wordpress/ ..."; \
+		sudo mkdir -p /home/data/wordpress; \
+	fi
+
+create_mariadb:
+	@if [ -d "/home/data/mariadb" ]; then \
+			echo "$(YELLOW)/home/data/mariadb/$(RESET) exists"; \
+	else \
+		echo "$(GREEN)Creating /home/data/mariadb/ ..."; \
+		sudo mkdir -p /home/data/mariadb; \
+	fi
+
+create_both: create_wordpress create_mariadb
+
+build: create_both
 	@echo "$(YELLOW)[*] Phase of building images ...$(RESET)"
 	@sudo docker-compose -f $(path) build
 
@@ -36,6 +54,15 @@ remove_containers:
 	@echo "$(RED)[!] Forcibly deleting containers ...$(RESET)"
 	@sudo docker container rm -f $(shell sudo docker container ls -aq)
 
+remove_volumes:
+	@echo "$(RED)Removing volumes ...$(RESET)"
+	@sudo rm -rf /home/data/mariadb/ /home/data/wordpress/
+	@sudo docker volume rm $(shell sudo docker volume ls -q)
+
+remove_networks:
+	@echo "$(RED) Removing networks ...$(RESET)"
+	@sudo docker network rm inception
+
 show:
 	@echo "$(GREEN)[.] List of all running containers$(RESET)"
 	@sudo docker container ls
@@ -43,8 +70,14 @@ show:
 show_all:
 	@echo "$(GREEN)[.] List all running and sleeping containers$(RESET)"
 	@sudo docker container ls -a
+	@echo "$(GREEN)[.] List all images$(RESET)"
+	@sudo docker image ls
+	@echo "$(GREEN)[.] List all volumes$(RESET)"
+	@sudo docker volume ls
+	@echo "$(GREEN)[.] List all networks$(RESET)"
+	@sudo docker network ls
 
-fclean: remove_containers remove_images
+fclean: remove_containers remove_images remove_volumes
 
 re: fclean build up_detach
 

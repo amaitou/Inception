@@ -7,7 +7,7 @@ private_key="/etc/ssl/private/nginx-selfsigned.key"
 certificate_signing_request="/etc/ssl/certs/nginx-selfsigned.cst"
 
 # Declare the options
-options="/C=MO/L=MD/O=1334/OU=STUDENT/CN=amait-ou.42.fr"
+options="/C=MO/L=MD/O=1337/OU=STUDENT/CN=amait-ou.42.fr"
 
 # Generate the private key
 openssl genpkey -algorithm RSA -out "$private_key"

@@ -11,8 +11,18 @@ networks:
 # Create Volumes
 volumes:
     mariadb:
-        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /home/data/mariadb
         name: mariadb
+    
+    wordpress:
+        driver_opts:
+            type: none
+            o: bind
+            device: /home/data/wordpress
+        name: wordpress
 
 # Define services (nginx, worpdress, mariadb)
 services:
@@ -29,8 +39,14 @@ services:
         restart: always
         networks:
             - inception
+        depends_on:
+            - wordpress
+        env_file:
+            - .env
+        volumes:
+            - wordpress:/var/www/html/wordpress
 
-    #mariadb
+    # mariadb
     mariadb:
         container_name: mariadb
         image: mariadb:1337
@@ -47,3 +63,22 @@ services:
             - mariadb:/var/lib/mysql
         build:
             context: ./requirements/mariadb/.
+    
+    # wordpress
+    wordpress:
+        container_name: wordpress
+        image: wordpress:1337
+        stdin_open: true
+        tty: true
+        ports:
+            - "9000:9000"
+        networks:
+            - inception
+        env_file:
+            - .env
+        volumes:
+            - wordpress:/var/www/html/wordpress
+        build:
+            context: ./requirements/wordpress/.
+        depends_on:
+            - mariadb
