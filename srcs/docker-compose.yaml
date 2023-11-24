@@ -5,7 +5,7 @@ version: '3'
 # Create a newtork under the name of "inception"
 networks:
     inception:
-        name: inception
+        name: $NETWORK_NAME
         driver: bridge
 
 # Create Volumes
@@ -14,35 +14,35 @@ volumes:
         driver_opts:
             type: none
             o: bind
-            device: /home/amaitou/mariadb/
-        name: mariadb
+            device: $MARIADB_VOLUME_PATH
+        name: $MARIADB_VOLUME_NAME
     
     wordpress:
         driver_opts:
             type: none
             o: bind
-            device: /home/amaitou/wordpress/
-        name: wordpress
+            device: $WORDPRESS_VOLUME_PATH
+        name: $WORDPRESS_VOLUME_NAME
 
 # Define services (nginx, worpdress, mariadb)
 services:
     # nginx
     nginx:
         expose:
-            - "443"
-        container_name: nginx
-        image: nginx:1337
+            - $NGINX_PORT
+        container_name: $NGINX_NAME
+        image: $NGINX_IMAGE
         build:
             context: ./requirements/nginx/.
         stdin_open: true
         tty: true
         ports:
-            - "443:443"
-        restart: always
+            - $NGINX_PORT:$NGINX_PORT
+        restart: on-failure
         networks:
-            - inception
+            - $NETWORK_NAME
         depends_on:
-            - wordpress
+            - $WORDPRESS_NAME
         env_file:
             - .env
         volumes:
@@ -51,16 +51,16 @@ services:
     # mariadb
     mariadb:
         expose:
-            - "3306"
-        container_name: mariadb
-        image: mariadb:1337
+            - $MARIADB_PORT
+        container_name: $MARIADB_NAME
+        image: $MARIADB_IMAGE
         stdin_open: true
         tty: true
         ports:
-            - "3306:3306"
-        restart: always
+            - $MARIADB_PORT:$MARIADB_PORT
+        restart: on-failure
         networks:
-            - inception
+            - $NETWORK_NAME
         env_file:
             - .env
         volumes:
@@ -71,15 +71,16 @@ services:
     # wordpress
     wordpress:
         expose:
-            - "9000"
-        container_name: wordpress
-        image: wordpress:1337
+            - $WORDPRESS_PORT
+        container_name: $WORDPRESS_NAME
+        image: $WORDPRESS_IMAGE
         stdin_open: true
         tty: true
+        restart: on-failure
         ports:
-            - "9000:9000"
+            - $WORDPRESS_PORT:$WORDPRESS_PORT
         networks:
-            - inception
+            - $NETWORK_NAME
         env_file:
             - .env
         volumes:
@@ -87,4 +88,4 @@ services:
         build:
             context: ./requirements/wordpress/.
         depends_on:
-            - mariadb
+            - $MARIADB_NAME
