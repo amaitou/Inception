@@ -15,8 +15,6 @@ RUN mkdir -p /var/www/html/wordpress
 RUN chmod 755 -R /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/
 
-EXPOSE 443
-
 COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
 COPY ./tools/nginx.sh /usr/local/bin/
 

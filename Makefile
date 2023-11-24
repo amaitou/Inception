@@ -9,19 +9,19 @@ RESET := \033[0m
 all: build up_detach
 
 create_wordpress:
-	@if [ -d "/home/data/wordpress" ]; then \
-		echo "$(YELLOW)/home/data/wordpress/$(RESET) exists"; \
+	@if [ -d "/home/$(shell echo $$USER)/wordpress" ]; then \
+		echo "$(YELLOW)/home/$(shell echo $$USER)/wordpress/$(RESET) exists"; \
 	else \
-		echo "$(GREEN)Creating /home/data/wordpress/ ...$(RESET)"; \
-		sudo mkdir -p /home/data/wordpress; \
+		echo "$(GREEN)Creating /home/$(shell echo $$USER)/wordpress/ ...$(RESET)"; \
+		sudo mkdir -p /home/$(shell echo $$USER)/wordpress; \
 	fi
 
 create_mariadb:
-	@if [ -d "/home/data/mariadb" ]; then \
-			echo "$(YELLOW)/home/data/mariadb/$(RESET) exists"; \
+	@if [ -d "/home/$(shell echo $$USER)/mariadb" ]; then \
+		echo "$(YELLOW)/home/$(shell echo $$USER)/mariadb/$(RESET) exists"; \
 	else \
-		echo "$(GREEN)Creating /home/data/mariadb/ ...$(RESET)"; \
-		sudo mkdir -p /home/data/mariadb; \
+		echo "$(GREEN)Creating /home/$(shell echo $$USER)/mariadb/ ...$(RESET)"; \
+		sudo mkdir -p /home/$(shell echo $$USER)/mariadb; \
 	fi
 
 create_both: create_wordpress create_mariadb
@@ -57,7 +57,7 @@ remove_containers:
 
 remove_volumes:
 	@echo "$(RED)Removing volumes ...$(RESET)"
-	@sudo rm -rf /home/data/mariadb/ /home/data/wordpress/
+	@sudo rm -rf /home/$(shell echo $$USER)/mariadb/ /home/$(shell echo $$USER)/wordpress/
 	@sudo docker volume rm $(shell sudo docker volume ls -q)
 
 remove_networks:

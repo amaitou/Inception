@@ -14,20 +14,22 @@ volumes:
         driver_opts:
             type: none
             o: bind
-            device: /home/data/mariadb
+            device: /home/amaitou/mariadb/
         name: mariadb
     
     wordpress:
         driver_opts:
             type: none
             o: bind
-            device: /home/data/wordpress
+            device: /home/amaitou/wordpress/
         name: wordpress
 
 # Define services (nginx, worpdress, mariadb)
 services:
     # nginx
     nginx:
+        expose:
+            - "443"
         container_name: nginx
         image: nginx:1337
         build:
@@ -48,6 +50,8 @@ services:
 
     # mariadb
     mariadb:
+        expose:
+            - "3306"
         container_name: mariadb
         image: mariadb:1337
         stdin_open: true
@@ -66,6 +70,8 @@ services:
     
     # wordpress
     wordpress:
+        expose:
+            - "9000"
         container_name: wordpress
         image: wordpress:1337
         stdin_open: true

@@ -11,7 +11,5 @@ RUN apt install -y  wget \
 
 COPY ./tools/wordpress.sh /usr/local/bin/
 
-EXPOSE 9000
-
 ENTRYPOINT ["/usr/local/bin/wordpress.sh"]
 CMD ["php-fpm7.3", "-F"]
