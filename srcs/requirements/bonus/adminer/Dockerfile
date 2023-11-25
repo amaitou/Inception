@@ -6,6 +6,10 @@ RUN apt install -y  wget \
                     php-mysql \
                     php-fpm
 
+RUN mkdir -p /var/www/html/adminer/
+RUN mkdir -p /run/php/
+
 COPY ./tools/adminer.sh /usr/local/bin/
 
-CMD ["/usr/local/bin/adminer.sh"]
+ENTRYPOINT ["/usr/local/bin/adminer.sh"]
+CMD ["php-fpm7.3", "-F"]

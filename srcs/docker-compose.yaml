@@ -46,7 +46,7 @@ services:
         env_file:
             - .env
         volumes:
-            - wordpress:/var/www/html/wordpress
+            - wordpress:/var/www/html/
 
     # mariadb
     mariadb:
@@ -84,7 +84,7 @@ services:
         env_file:
             - .env
         volumes:
-            - wordpress:/var/www/html/wordpress
+            - wordpress:/var/www/html/
         build:
             context: ./requirements/wordpress/.
         depends_on:

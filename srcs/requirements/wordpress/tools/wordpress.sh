@@ -14,7 +14,7 @@ if [ ! -d "/usr/local/bin/wp/" ]; then
 fi
 
 if [ ! -d "/var/www/html/wordpress" ]; then
-    mkdir -p /var/www/wordpress
+    mkdir -p /var/www/html/wordpress
 fi
 
 cd /var/www/html/wordpress
