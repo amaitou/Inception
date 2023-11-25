@@ -112,7 +112,7 @@ services:
         volumes:
             - wordpress:/var/www/html/
     
-    # netdata
+    # cadvisor
     cadvisor:
         expose:
             - $CADVISOR_PORT
