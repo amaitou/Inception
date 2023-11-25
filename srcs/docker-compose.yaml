@@ -88,4 +88,27 @@ services:
         build:
             context: ./requirements/wordpress/.
         depends_on:
+            - $MARIADB_NAME        
+    
+    # adminer
+    adminer:
+        expose:
+            - $ADMINER_PORT
+        container_name: $ADMINER_NAME
+        image: $ADMINER_IMAGE
+        stdin_open: true
+        tty: true
+        restart: on-failure
+        ports:
+            - $ADMINER_PORT:$ADMINER_PORT
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            - .env
+        build:
+            context: ./requirements/bonus/adminer/.
+        depends_on:
             - $MARIADB_NAME
+        volumes:
+            - wordpress:/var/www/html/
+        
