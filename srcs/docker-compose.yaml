@@ -88,7 +88,7 @@ services:
         build:
             context: ./requirements/wordpress/.
         depends_on:
-            - $MARIADB_NAME        
+            - $MARIADB_NAME
     
     # adminer
     adminer:
@@ -111,4 +111,26 @@ services:
             - $MARIADB_NAME
         volumes:
             - wordpress:/var/www/html/
+    
+    # netdata
+    cadvisor:
+        expose:
+            - $CADVISOR_PORT
+        container_name: $CADVISOR_NAME
+        image: $CADVISOR_IMAGE
+        stdin_open: true
+        tty: true
+        restart: on-failure
+        ports:
+            - $CADVISOR_PORT:$CADVISOR_PORT
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            .env
+        build:
+            context: ./requirements/bonus/cadvisor/.
+        volumes:
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
         
