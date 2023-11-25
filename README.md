@@ -70,15 +70,15 @@ But in this article, we will be using the `docker` (u can use either the docker 
 
 	`<image name>:<tag>` -> This command will allow you to name your created image
 
-	delete or forcibly the image
+	delete or forcibly delete the image
 	```sh
-	# delete the image if the container if not running
+	# delete the image if the container is not running
 	docker image rm <image name>
-	# delete the image if the container running
+	# delete the image if the container is running
 	docker image rm -f <image name>
 	```
 
-	list images
+	list all images
 	```sh
 	docker image ls -a
 	```
@@ -148,9 +148,9 @@ Docker has two options for containers to store files on the host machine, so tha
 	docker run -v <path on host>:<path in container> <image name>
 	```
 
-- ### The Difference between Volume and Mount
+### The Difference between Volume and Mount
 
-	The primary distinction between volumes and mounts in Docker lies in their purpose and how they interact with containers:
+The primary distinction between volumes and mounts in Docker lies in their purpose and how they interact with containers:
 
 - ### Data Persistence:
 
@@ -170,7 +170,7 @@ A Docker network is a communication bridge between different containers and betw
 
 	- ##### Bridge Network
 
-	Default network created when Docker is installed. It allows containers on the same host to communicate.
+	Default network created when Docker is installed. It allows containers on the same host to communicate. <br />
 	ex ->  Running a web server container and a database container that need to interact with each other.
 		
 	```sh
@@ -182,7 +182,7 @@ A Docker network is a communication bridge between different containers and betw
 	---
 
 	- #### Host Network
-	Containers share the host network stack, meaning they can directly access ports on the host.
+	Containers share the host network stack, meaning they can directly access ports on the host. <br />
 	ex -> Suitable for high-performance scenarios where networking isolation is not a concern.
 	
 	```sh
@@ -193,18 +193,19 @@ A Docker network is a communication bridge between different containers and betw
 
 	When you create a bridge network in Docker, it essentially acts as a software switch, allowing containers to communicate with each other and with the host system. This bridge network provides a layer of abstraction, isolating the containers from each other while still enabling communication.
 
-	**IP Address Assignment** <br />
+	### **IP Address Assignment** <br />
 	The Docker daemon, responsible for managing containers, assigns an IP address to the container from the bridge network's subnet.
 
 	let's give an example right?
 
-	first, of all let's create our `user-defined network` using `docker network create` and give it a particular name which is in our case "my_network"
+	first of all, let's create our `user-defined network` using `docker network create` and give it a particular name which is in our case "my_network"
 
 	```sh
 	docker network create my_network
 	```
 
-	once you do this this network will be added to the list of networks within docker you can check all of them by typing
+	once you do this, the network will be added to the list of networks within docker. <br /> 
+	you can check all of them by typing:
 
 	```sh
 	docker network ls
@@ -221,7 +222,7 @@ A Docker network is a communication bridge between different containers and betw
 	-> bridge: this is the bridge network that is used by docker in the default mode <br />
 	-> host: this is the host network if you want to link your containers directly with the host machine (lack of isolation)
 
-	> Check your address within your host you will see your interfaces but there will be more interfaces one docker is called `docker0`, this last is created by docker and whenever you create a container it is given an IP Address within the subnet of `docker0` the same goes for a network that you may create and link containers with it.
+	> Check your address within your host, you will see your interfaces but there will be more interfaces. one for docker and called `docker0`, this last is created by docker and whenever you create a container it is given an IP Address within the subnet of `docker0` the same goes for a network that you may create and link containers with it.
 	the default IP range of `docker0` is `172.17.0.1/16`
 
 	**Checking docker0**
@@ -248,3 +249,164 @@ A Docker network is a communication bridge between different containers and betw
 	```
 
 	in the output look for a key called `containers`, and then you will see the ID of each container you have linked with your network besides the IP address.
+
+# Docker-Compose
+
+Docker Compose is a tool for defining and running multi-container Docker applications. It allows you to define an entire application stack, including services, networks, and volumes, in a single file called docker-compose.yml. This file provides a way to configure and link multiple containers together, specifying how they should interact.
+
+In the docker-compose.yml file, you define the services, networks, and volumes for your application. Each service represents a container, and you can specify various settings for each service, such as the Docker image to use, environment variables, ports to expose, and more.
+
+when it comes to docker-compose, once you build the image, the docker-compose reads the instructions from the docker-compose.yaml then it creates the volumes, networks, build images and run containers as well so it is much easier than building and running each container alone.
+
+Here is an example of how a docker-compose.yaml should be (this example was taken from my project):
+
+```yaml
+
+# Set the version
+version: '3'
+
+# Create a newtork under the name of "inception"
+networks:
+    inception:
+        name: $NETWORK_NAME
+        driver: bridge
+
+# Create Volumes
+volumes:
+    mariadb:
+        driver_opts:
+            type: none
+            o: bind
+            device: $MARIADB_VOLUME_PATH
+        name: $MARIADB_VOLUME_NAME
+    
+    wordpress:
+        driver_opts:
+            type: none
+            o: bind
+            device: $WORDPRESS_VOLUME_PATH
+        name: $WORDPRESS_VOLUME_NAME
+
+# Define services (nginx, worpdress, mariadb)
+services:
+    # nginx
+    nginx:
+        expose:
+            - $NGINX_PORT
+        container_name: $NGINX_NAME
+        image: $NGINX_IMAGE
+        build:
+            context: ./requirements/nginx/.
+        stdin_open: true
+        tty: true
+        ports:
+            - $NGINX_PORT:$NGINX_PORT
+        restart: on-failure
+        networks:
+            - $NETWORK_NAME
+        depends_on:
+            - $WORDPRESS_NAME
+        env_file:
+            - .env
+        volumes:
+            - wordpress:/var/www/html/wordpress
+
+    # mariadb
+    mariadb:
+        expose:
+            - $MARIADB_PORT
+        container_name: $MARIADB_NAME
+        image: $MARIADB_IMAGE
+        stdin_open: true
+        tty: true
+        ports:
+            - $MARIADB_PORT:$MARIADB_PORT
+        restart: on-failure
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            - .env
+        volumes:
+            - mariadb:/var/lib/mysql
+        build:
+            context: ./requirements/mariadb/.
+    
+    # wordpress
+    wordpress:
+        expose:
+            - $WORDPRESS_PORT
+        container_name: $WORDPRESS_NAME
+        image: $WORDPRESS_IMAGE
+        stdin_open: true
+        tty: true
+        restart: on-failure
+        ports:
+            - $WORDPRESS_PORT:$WORDPRESS_PORT
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            - .env
+        volumes:
+            - wordpress:/var/www/html/wordpress
+        build:
+            context: ./requirements/wordpress/.
+        depends_on:
+            - $MARIADB_NAME        
+    
+    # adminer
+    adminer:
+        expose:
+            - $ADMINER_PORT
+        container_name: $ADMINER_NAME
+        image: $ADMINER_IMAGE
+        stdin_open: true
+        tty: true
+        restart: on-failure
+        ports:
+            - $ADMINER_PORT:$ADMINER_PORT
+        networks:
+            - $NETWORK_NAME
+        env_file:
+            - .env
+        build:
+            context: ./requirements/bonus/adminer/.
+        depends_on:
+            - $MARIADB_NAME
+        volumes:
+            - wordpress:/var/www/html/
+```
+
+in this example we have three four services:
+
+- mariadb, which is the database
+- nginx, which is the proxy and web server
+- adminer, which visualizes out mariadb database
+- wordpress, which is our official website
+
+each service contains a several keys, let's dive and explain each one of them:
+
+> container_name -> this is the name that you wanna name your container
+
+> image -> this is the base that you wanna create (it might be a pulled image from docker hub)
+
+> stdin_open -> is used to open the standard input (stdin) of the container.
+
+> tty -> allocates a pseudo-TTY (terminal) for the container, which is often used in conjunction with stdin_open to allow interactive command-line sessions.
+
+> restart -> this key tells the docker-compose the restarting mode of our container, we can restart it always or on failure ...etc
+
+> networks -> the specified network for this container
+
+> build -> the exact location of our dockerfile
+
+> depends_on -> do not start the current until you start the service we are depending on
+
+> volumes -> the volumes attached with the container for data persistent
+
+> env_file -> let's docker-compose expands the environment variables from this path file which is in our case .env
+
+> ports -> allow us to match a host machine port with the container port
+
+### Port and Expose
+
+In recent versions of Dockerfile, EXPOSE doesn't have any operational impact anymore, it is just informative. meanwhile ports, property defines the ports that we want to expose from the container. But unlike with the expose configuration, these ports will be accessible internally and published on the host machine.
