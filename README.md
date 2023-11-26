@@ -138,6 +138,7 @@ Docker has two options for containers to store files on the host machine, so tha
 	# Use the -v or --volume flag with the docker run command to attach a volume to a container.
 	docker run -v <volume name>:<path in container> <image name>
 	```
+	---
 
 - ### Mount
 
@@ -147,6 +148,7 @@ Docker has two options for containers to store files on the host machine, so tha
 	# Use the -v or --volume flag with the docker run command to mount a host directory into a container.
 	docker run -v <path on host>:<path in container> <image name>
 	```
+	---
 
 ### The Difference between Volume and Mount
 
@@ -156,11 +158,17 @@ The primary distinction between volumes and mounts in Docker lies in their purpo
 
 	Volumes are primarily used for data persistence. They are managed by Docker and are designed to outlive the containers they are associated with. This makes volumes suitable for storing important data like databases, application logs, and configurations that need to persist beyond container instances.
 
+	---
+
 - ### Real-time Interaction:
 
 	Mounts, on the other hand, are meant for real-time interaction between the host and containers. They allow containers to access files and directories on the host, which is valuable for development, debugging, or sharing resources without the need for copying data into the container.
 
+	---
+
 > Volumes are designed for data persistence and are ideal for storing critical data, while mounts facilitate real-time interaction between containers and the host system.
+
+---
 
 # Docker Network
 
@@ -192,6 +200,8 @@ A Docker network is a communication bridge between different containers and betw
 	> There are other several types of docker networks but I'm not going to cover them over here since these are the only two types of networks you need to know so far.
 
 	When you create a bridge network in Docker, it essentially acts as a software switch, allowing containers to communicate with each other and with the host system. This bridge network provides a layer of abstraction, isolating the containers from each other while still enabling communication.
+
+	---
 
 	### **IP Address Assignment** <br />
 	The Docker daemon, responsible for managing containers, assigns an IP address to the container from the bridge network's subnet.
@@ -250,6 +260,8 @@ A Docker network is a communication bridge between different containers and betw
 
 	in the output look for a key called `containers`, and then you will see the ID of each container you have linked with your network besides the IP address.
 
+---
+
 # Docker-Compose
 
 Docker Compose is a tool for defining and running multi-container Docker applications. It allows you to define an entire application stack, including services, networks, and volumes, in a single file called docker-compose.yml. This file provides a way to configure and link multiple containers together, specifying how they should interact.
@@ -262,16 +274,13 @@ Here is an example of how a docker-compose.yaml should be (this example was take
 
 ```yaml
 
-# Set the version
 version: '3'
 
-# Create a newtork under the name of "inception"
 networks:
     inception:
         name: $NETWORK_NAME
         driver: bridge
 
-# Create Volumes
 volumes:
     mariadb:
         driver_opts:
@@ -279,17 +288,8 @@ volumes:
             o: bind
             device: $MARIADB_VOLUME_PATH
         name: $MARIADB_VOLUME_NAME
-    
-    wordpress:
-        driver_opts:
-            type: none
-            o: bind
-            device: $WORDPRESS_VOLUME_PATH
-        name: $WORDPRESS_VOLUME_NAME
 
-# Define services (nginx, worpdress, mariadb)
 services:
-    # nginx
     nginx:
         expose:
             - $NGINX_PORT
@@ -309,71 +309,7 @@ services:
         env_file:
             - .env
         volumes:
-            - wordpress:/var/www/html/wordpress
-
-    # mariadb
-    mariadb:
-        expose:
-            - $MARIADB_PORT
-        container_name: $MARIADB_NAME
-        image: $MARIADB_IMAGE
-        stdin_open: true
-        tty: true
-        ports:
-            - $MARIADB_PORT:$MARIADB_PORT
-        restart: on-failure
-        networks:
-            - $NETWORK_NAME
-        env_file:
-            - .env
-        volumes:
-            - mariadb:/var/lib/mysql
-        build:
-            context: ./requirements/mariadb/.
-    
-    # wordpress
-    wordpress:
-        expose:
-            - $WORDPRESS_PORT
-        container_name: $WORDPRESS_NAME
-        image: $WORDPRESS_IMAGE
-        stdin_open: true
-        tty: true
-        restart: on-failure
-        ports:
-            - $WORDPRESS_PORT:$WORDPRESS_PORT
-        networks:
-            - $NETWORK_NAME
-        env_file:
-            - .env
-        volumes:
-            - wordpress:/var/www/html/wordpress
-        build:
-            context: ./requirements/wordpress/.
-        depends_on:
-            - $MARIADB_NAME        
-    
-    # adminer
-    adminer:
-        expose:
-            - $ADMINER_PORT
-        container_name: $ADMINER_NAME
-        image: $ADMINER_IMAGE
-        stdin_open: true
-        tty: true
-        restart: on-failure
-        ports:
-            - $ADMINER_PORT:$ADMINER_PORT
-        networks:
-            - $NETWORK_NAME
-        env_file:
-            - .env
-        build:
-            context: ./requirements/bonus/adminer/.
-        depends_on:
-            - $MARIADB_NAME
-        volumes:
-            - wordpress:/var/www/html/
+            - wordpress:/var/www/html/wordpress   
 ```
 
 in this example we have three four services:
@@ -387,26 +323,65 @@ each service contains a several keys, let's dive and explain each one of them:
 
 > container_name -> this is the name that you wanna name your container
 
+---
+
 > image -> this is the base that you wanna create (it might be a pulled image from docker hub)
+
+---
 
 > stdin_open -> is used to open the standard input (stdin) of the container.
 
+---
+
 > tty -> allocates a pseudo-TTY (terminal) for the container, which is often used in conjunction with stdin_open to allow interactive command-line sessions.
+
+---
 
 > restart -> this key tells the docker-compose the restarting mode of our container, we can restart it always or on failure ...etc
 
+---
+
 > networks -> the specified network for this container
+
+---
 
 > build -> the exact location of our dockerfile
 
+---
+
 > depends_on -> do not start the current until you start the service we are depending on
+
+---
 
 > volumes -> the volumes attached with the container for data persistent
 
+---
+
 > env_file -> let's docker-compose expands the environment variables from this path file which is in our case .env
+
+---
 
 > ports -> allow us to match a host machine port with the container port
 
-### Port and Expose
+---
 
 In recent versions of Dockerfile, EXPOSE doesn't have any operational impact anymore, it is just informative. meanwhile ports, property defines the ports that we want to expose from the container. But unlike with the expose configuration, these ports will be accessible internally and published on the host machine.
+
+---
+# Docker-Compose Commands
+
+with docker-compose you can manage your docker containers however you want, the way you want since that last provides the flexible control, here are some common docker-compose commands:
+
+- `up`      -> create and start containers
+- `down`    -> stops and removes containers, networks, volumes, and other services
+- `build`   -> build images
+- `exec`    -> run a command in a running container
+- `stop`    -> stop running containers
+- `start`   -> start existing containers
+- `ps`      -> lists all running containers
+- `restart` -> restart a running containers
+- `config`  -> validates and shows the configuration of your docker-compose.yml file.
+
+⚠️ I have explained all you need to start using docker, bu I'm not gonna explain the projects because it doesn't mean any sense. people should learn by practicing, solving the problems they face as well trying to be creative on their way.
+
+---
