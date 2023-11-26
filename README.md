@@ -394,9 +394,10 @@ The init process has a crucial role in the system. It is responsible for initial
 
 after we have covered what's PID in Linux we can say the same idea goes over here in our dockerfile, In Docker, the PID 1 inside a container is typically the main process that is specified in the container's entry point or command. Docker containers are designed to run a single main process, and when that process exits, the container is considered to have completed its task and will be stopped. <br />
 
+In the example of mariadb container, the `mysqld` becomes the main process, and Docker will run it as PID 1 inside the container. 
+
 ---
 
-In the example of mariadb container, the `mysqld` becomes the main process, and Docker will run it as PID 1 inside the container. 
 ⚠️ I have explained all you need to start using docker, bu I'm not gonna explain the projects because it doesn't mean any sense. people should learn by practicing, solving the problems they face as well trying to be creative on their way.
 
 ---
