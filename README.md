@@ -3,7 +3,7 @@
 
 ---
 
-# Table of content:
+# Table of contents:
 
 - [Inception](https://github.com/amaitou/Inception#inception)
 - [What is Docker?](https://github.com/amaitou/Inception#what-is-docker)
@@ -61,6 +61,9 @@ But in this article, we will be using the `docker` (u can use either the docker 
 ---
 
 - ### Image
+
+	![image](https://github.com/amaitou/Inception/assets/49293816/36006ea3-f2d1-4828-b176-45a6bbb857e8)
+
 	if you want to create an image for a container to run an app, you must what's called a Dockerfile, this is like the file that contains to set up the Docker image for you
 
 	```dockerfile
@@ -111,6 +114,9 @@ But in this article, we will be using the `docker` (u can use either the docker 
 
 - ### Container
 
+	![container](https://github.com/amaitou/Inception/assets/49293816/27293798-14e9-4d08-81ab-93180a5f93b7)
+
+
 	after creating your image, a container must be created right now to run the app properly, when running a container you can run it simply by typing
 
 	```sh
@@ -148,9 +154,15 @@ But in this article, we will be using the `docker` (u can use either the docker 
 
 # Data Persistence
 
+![data_persistent](https://github.com/amaitou/Inception/assets/49293816/5ee74e81-c8c0-410f-a5f2-d00ac17f8b81)
+
+
 Docker has two options for containers to store files on the host machine, so that the files are persisted even after the container stops: volumes, and bind mounts. Docker also supports containers storing files in memory on the host machine. Such files do not persist.
 
 - ### Volumes
+
+	![volume](https://github.com/amaitou/Inception/assets/49293816/7b8c7284-fa46-44f5-975f-c57243f0a4dd)
+
 
 	Docker volumes are a way to persistently store and manage data outside of the container's writable layer. Volumes are Docker-managed directories or file systems that are mounted into containers. They are separate from the container's file system, making them ideal for storing data that needs to survive container life cycles.
 
@@ -165,6 +177,9 @@ Docker has two options for containers to store files on the host machine, so tha
 	---
 
 - ### Mount
+
+	![mount](https://github.com/amaitou/Inception/assets/49293816/587b2d4f-b833-445e-a6a3-b9ec1aba1df7)
+
 
 	Mounts, on the other hand, are a way to bind a file or directory from the host system into a container. Mounts can be used to provide containers with access to specific files or directories on the host. This approach allows containers to interact with files from the host system in real time.
 
@@ -195,6 +210,9 @@ The primary distinction between volumes and mounts in Docker lies in their purpo
 ---
 
 # Docker Network
+
+![net](https://github.com/amaitou/Inception/assets/49293816/32496f5c-a432-438e-ba44-8b0d74a76f26)
+
 
 A Docker network is a communication bridge between different containers and between containers and the host system. It enables isolated containers to communicate with each other while providing a level of security and abstraction.
 
@@ -288,11 +306,14 @@ A Docker network is a communication bridge between different containers and betw
 
 # Docker-Compose
 
+![compose](https://github.com/amaitou/Inception/assets/49293816/c7cf2fd8-a473-43c5-b660-753148be9ffd)
+
+
 Docker Compose is a tool for defining and running multi-container Docker applications. It allows you to define an entire application stack, including services, networks, and volumes, in a single file called docker-compose.yml. This file provides a way to configure and link multiple containers together, specifying how they should interact.
 
 In the docker-compose.yml file, you define the services, networks, and volumes for your application. Each service represents a container, and you can specify various settings for each service, such as the Docker image to use, environment variables, ports to expose, and more.
 
-when it comes to docker-compose, once you build the image, the docker-compose reads the instructions from the docker-compose.yaml then it creates the volumes, networks, build images and run containers as well so it is much easier than building and running each container alone.
+when it comes to docker-compose, once you build the image, the docker-compose reads the instructions from the docker-compose.yaml then creates the volumes, networks, builds images, and runs containers as well so it is much easier than building and running each container alone.
 
 Here is an example of how a docker-compose.yaml should be (this example was taken from my project):
 
@@ -336,20 +357,20 @@ services:
             - wordpress:/var/www/html/wordpress   
 ```
 
-in this example we have three four services:
+in this example, we have four services:
 
-- mariadb, which is the database
-- nginx, which is the proxy and web server
-- adminer, which visualizes out mariadb database
-- wordpress, which is our official website
+- MariaDB, which is the database
+- Nginx, which is the proxy and web server
+- Admirer, which visualizes our MariaDB database
+- WordPress, which is our official website
 
-each service contains a several keys, let's dive and explain each one of them:
+each service contains several keys, let's dive into and explain each one of them:
 
-> container_name -> this is the name that you wanna name your container
+> container_name -> This is the name that you wanna name your container
 
 ---
 
-> image -> this is the base that you wanna create (it might be a pulled image from docker hub)
+> image -> This is the base that you wanna create (it might be a pulled image from the docker hub)
 
 ---
 
@@ -361,7 +382,7 @@ each service contains a several keys, let's dive and explain each one of them:
 
 ---
 
-> restart -> this key tells the docker-compose the restarting mode of our container, we can restart it always or on failure ...etc
+> restart -> This key tells the docker-compose the restarting mode of our container, we can restart it always or on failure ...etc
 
 ---
 
@@ -373,7 +394,7 @@ each service contains a several keys, let's dive and explain each one of them:
 
 ---
 
-> depends_on -> do not start the current until you start the service we are depending on
+> depends_on -> Do not start the current until you start the service we are depending on
 
 ---
 
@@ -381,7 +402,7 @@ each service contains a several keys, let's dive and explain each one of them:
 
 ---
 
-> env_file -> let's docker-compose expands the environment variables from this path file which is in our case .env
+> env_file -> Let's docker-compose expands the environment variables from this path file which is in our case .env
 
 ---
 
@@ -389,12 +410,15 @@ each service contains a several keys, let's dive and explain each one of them:
 
 ---
 
-In recent versions of Dockerfile, EXPOSE doesn't have any operational impact anymore, it is just informative. meanwhile ports, property defines the ports that we want to expose from the container. But unlike with the expose configuration, these ports will be accessible internally and published on the host machine.
+In recent versions of Dockerfile, EXPOSE doesn't have any operational impact anymore, it is just informative. meanwhile, ports, property defines the ports that we want to expose from the container. But unlike with the expose configuration, these ports will be accessible internally and published on the host machine.
 
 ---
 # Docker-Compose Commands
 
-with docker-compose you can manage your docker containers however you want, the way you want since that last provides the flexible control, here are some common docker-compose commands:
+![image-16](https://github.com/amaitou/Inception/assets/49293816/b2a949ae-0e48-4d7f-9741-2ba68590c67c)
+
+
+with docker-compose you can manage your docker containers however you want, the way you want since that last provides flexible control, here are some common docker-compose commands:
 
 - `up`      -> create and start containers
 - `down`    -> stops and removes containers, networks, volumes, and other services
@@ -410,7 +434,10 @@ with docker-compose you can manage your docker containers however you want, the 
 
 # PID 1 (Process ID 1)
 
-If we want what is PID 1 in docker, we must first know what is PID 1 itself and what it's relation with Linux.
+![id](https://github.com/amaitou/Inception/assets/49293816/aa8519bf-589c-4fb9-835f-3b1d1cdfd045)
+
+
+If we want what is PID 1 in docker, we must first know what is PID 1 itself and what its relation with Linux.
 
 In a Unix-like operating system, Process ID 1, often referred to as PID 1, is a special process known as the init process. The init process is the first process started by the kernel during the system boot process, and it has a PID of 1.
 
@@ -418,10 +445,10 @@ The init process has a crucial role in the system. It is responsible for initial
 
 after we have covered what's PID in Linux we can say the same idea goes over here in our dockerfile, In Docker, the PID 1 inside a container is typically the main process that is specified in the container's entry point or command. Docker containers are designed to run a single main process, and when that process exits, the container is considered to have completed its task and will be stopped. <br />
 
-In the example of mariadb container, the `mysqld` becomes the main process, and Docker will run it as PID 1 inside the container. 
+In the example of the MariaDB container, the `mysqld` becomes the main process, and Docker will run it as PID 1 inside the container. 
 
 ---
 
-⚠️ I have explained all you need to start using docker, bu I'm not gonna explain the projects because it doesn't mean any sense. people should learn by practicing, solving the problems they face as well trying to be creative on their way.
+⚠️ I have explained all you need to start using docker, but I'm not gonna explain the projects because it doesn't make any sense. people should learn by practicing, solving the problems they face as well trying to be creative on their way.
 
 ---
