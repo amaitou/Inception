@@ -452,3 +452,9 @@ In the example of the MariaDB container, the `mysqld` becomes the main process, 
 ⚠️ I have explained all you need to start using docker, but I'm not gonna explain the projects because it doesn't make any sense. people should learn by practicing, solving the problems they face as well trying to be creative on their way.
 
 ---
+
+### **Contact Me**
+
+* [Twitter][_1]
+
+[_1]: https://twitter.com/amait0u
