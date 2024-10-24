@@ -131,7 +131,7 @@ But in this article, we will be using the `docker` (u can use either the docker 
 	# start a container
 	docker container start <container name>
 	# stop a container
-	docker container start <container name>
+	docker container stop <container name>
 	```
 
 	delete or force the deletion of the container
